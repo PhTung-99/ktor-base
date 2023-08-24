@@ -1,15 +1,15 @@
-package com.example.features.user.dao
+package com.example.data.user.dao
 
-import com.example.database.DatabaseFactory.dbQuery
-import com.example.features.user.entity.UserEntity
-import com.example.features.user.mapper.resultRowToUser
-import com.example.features.user.models.User
+import com.example.data.database.DatabaseFactory.dbQuery
+import com.example.data.user.entity.UserEntity
+import com.example.data.user.mapper.resultRowToUser
+import com.example.data.user.models.User
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 
 class UserDAOImpl(): UserDAO {
 
-    override suspend fun getEmailUsed(email: String): Long {
+    override suspend fun countEmailUsed(email: String): Long {
         val count = UserEntity.select {
             UserEntity.email eq email
         }.count()
@@ -23,5 +23,12 @@ class UserDAOImpl(): UserDAO {
             it[UserEntity.password] = password
         }
         createStatement.resultedValues?.singleOrNull()?.let(::resultRowToUser)
+    }
+
+    override suspend fun getUserByEmail(email: String): User? = dbQuery {
+        val user = UserEntity.select {
+            UserEntity.email eq email
+        }
+        return@dbQuery user.singleOrNull()?.let(::resultRowToUser)
     }
 }

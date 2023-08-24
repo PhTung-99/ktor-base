@@ -1,6 +1,6 @@
 package com.example
 
-import com.example.database.DatabaseFactory
+import com.example.data.database.DatabaseFactory
 import com.example.di.configureKoin
 import com.example.logging.configureLogging
 import com.example.routes.*

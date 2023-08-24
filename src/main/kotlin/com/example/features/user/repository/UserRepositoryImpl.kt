@@ -1,8 +1,8 @@
 package com.example.features.user.repository
 
-import com.example.features.user.dao.UserDAO
-import com.example.features.user.models.User
-import com.example.features.user.models.requests.SignupRequest
+import com.example.data.user.dao.UserDAO
+import com.example.data.user.models.User
+import com.example.features.authentication.models.SignupRequest
 import org.mindrot.jbcrypt.BCrypt
 
 class UserRepositoryImpl(
@@ -10,7 +10,7 @@ class UserRepositoryImpl(
 ): UserRepository {
 
     private suspend fun isEmailAvailable(email: String): Boolean {
-        val count = userDAO.getEmailUsed(email)
+        val count = userDAO.countEmailUsed(email)
         return count != 0L
     }
 

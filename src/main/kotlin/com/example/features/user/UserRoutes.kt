@@ -1,13 +1,12 @@
 package com.example.features.user
 
-import com.example.features.user.models.requests.SignupRequest
+import com.example.features.authentication.models.SignupRequest
 import com.example.features.user.repository.UserRepository
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.server.util.*
 import org.koin.ktor.ext.inject
 
 fun Route.userRoutes() {

@@ -1,6 +1,6 @@
-package com.example.database
+package com.example.data.database
 
-import com.example.features.user.entity.UserEntity
+import com.example.data.user.entity.UserEntity
 import io.ktor.server.config.*
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.Database

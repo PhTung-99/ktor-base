@@ -1,7 +1,7 @@
-package com.example.features.user.mapper
+package com.example.data.user.mapper
 
-import com.example.features.user.entity.UserEntity
-import com.example.features.user.models.User
+import com.example.data.user.entity.UserEntity
+import com.example.data.user.models.User
 import org.jetbrains.exposed.sql.ResultRow
 
 fun resultRowToUser(row: ResultRow) = User(
