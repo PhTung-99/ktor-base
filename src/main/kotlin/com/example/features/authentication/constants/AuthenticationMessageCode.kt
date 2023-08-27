@@ -1,6 +1,6 @@
 package com.example.features.authentication.constants
 
-import com.example.data.models.BaseMessageCode
+import com.example.constants.BaseMessageCode
 
 object AuthenticationMessageCode {
     const val featureCode = "authentication"

@@ -1,4 +1,4 @@
-package com.example.data.models
+package com.example.constants
 
 object BaseMessageCode {
     const val CREATE = "C"
@@ -9,5 +9,5 @@ object BaseMessageCode {
     const val SUCCESS = "1"
     const val FAIL = "0"
 
-    const val READ_SUCCESS = "${READ}_${SUCCESS}"
+    const val READ_SUCCESS = "${READ}_$SUCCESS"
 }

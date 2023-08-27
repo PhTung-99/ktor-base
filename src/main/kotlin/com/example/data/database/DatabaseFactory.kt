@@ -1,7 +1,8 @@
 package com.example.data.database
 
 import com.example.data.user.entity.UserEntity
-import io.ktor.server.config.*
+import com.example.data.user.entity.UserTokenEntity
+import com.example.property.AppProperties
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
@@ -12,19 +13,21 @@ object DatabaseFactory {
 
     var isConnected = false
 
-    fun init(config: ApplicationConfig) {
+    fun init() {
         isConnected = try {
-            val driverClassName = config.property("postgres.driver").getString()
-            val jdbcURL = config.property("postgres.url").getString()
-            val user = config.property("postgres.user").getString()
-            val password = config.property("postgres.password").getString()
+            val driverClassName = AppProperties.postgresProperties.driver
+            val jdbcURL = AppProperties.postgresProperties.url
+            val user = AppProperties.postgresProperties.user
+            val password = AppProperties.postgresProperties.password
             val database = Database.connect(jdbcURL, driverClassName, user, password)
             database.connector() // Attempt to connect
             transaction(database) {
                 SchemaUtils.create(UserEntity)
+                SchemaUtils.create(UserTokenEntity)
             }
             true
         } catch (e: Exception) {
+            println(e.toString())
             false
         }
     }

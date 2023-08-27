@@ -1,8 +1,9 @@
 package com.example.data.models
 
-import io.ktor.http.*
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class BaseResponse<T>(
-    val httpStatusCode: HttpStatusCode,
-    val response: HttpResponse<T>,
+    val data: T? = null,
+    val messageCode: String? = null,
 )

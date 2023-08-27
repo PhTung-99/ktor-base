@@ -1,9 +1,8 @@
 package com.example.features.authentication
 
-import com.example.features.authentication.models.LoginRequest
-import com.example.features.authentication.models.SignupRequest
+import com.example.features.authentication.models.requests.LoginRequest
+import com.example.features.authentication.models.requests.SignupRequest
 import com.example.features.authentication.repository.AuthenticationRepository
-import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
@@ -16,25 +15,15 @@ fun Route.authenticationRoute() {
 
     route("/authentication") {
         post("signup") {
-            try {
-                val request = call.receive<SignupRequest>()
-                val response = authenticationRepository.signup(request)
-                call.respond(HttpStatusCode.OK, response.response)
-            }
-            catch (e: Exception) {
-                call.respond(HttpStatusCode.InternalServerError)
-            }
+            val request = call.receive<SignupRequest>()
+            val response = authenticationRepository.signup(request)
+            call.respond(response.first, mapOf("data" to response.second))
         }
 
         post("login") {
-            try {
-                val request = call.receive<LoginRequest>()
-                val response = authenticationRepository.login(request)
-                call.respond(response.httpStatusCode, response.response)
-            }
-            catch (e: Exception) {
-                call.respond(HttpStatusCode.InternalServerError)
-            }
+            val request = call.receive<LoginRequest>()
+            val response = authenticationRepository.login(request)
+            call.respond(response.first, response.second)
         }
     }
 }

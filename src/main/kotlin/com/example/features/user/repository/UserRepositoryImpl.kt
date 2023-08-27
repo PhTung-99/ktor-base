@@ -1,28 +1,27 @@
 package com.example.features.user.repository
 
+import com.example.data.models.BaseResponse
 import com.example.data.user.dao.UserDAO
 import com.example.data.user.models.User
-import com.example.features.authentication.models.SignupRequest
-import org.mindrot.jbcrypt.BCrypt
+import com.example.features.user.constants.UserMessageCode
+import io.ktor.http.*
+import java.util.*
 
 class UserRepositoryImpl(
     private val userDAO: UserDAO
 ): UserRepository {
 
-    private suspend fun isEmailAvailable(email: String): Boolean {
-        val count = userDAO.countEmailUsed(email)
-        return count != 0L
-    }
-
-    override suspend fun signUp(signupRequest: SignupRequest): User? {
-        if (isEmailAvailable(signupRequest.email)) {
-            val hashedPassword = BCrypt.hashpw(signupRequest.password, BCrypt.gensalt())
-            return userDAO.createUser(
-                email = signupRequest.email,
-                name = signupRequest.name,
-                password = hashedPassword
+    override suspend fun getUserInfo(userId: UUID): Pair<HttpStatusCode, BaseResponse<User?>> {
+        val user = userDAO.getUserById(userId)
+        return user?.let {
+            return Pair(
+                HttpStatusCode.OK,
+                BaseResponse(
+                    data = user,
+                )
             )
+        } ?: kotlin.run {
+            return Pair(HttpStatusCode.BadRequest, BaseResponse(messageCode = UserMessageCode.USER_NOT_FOUND))
         }
-        return null
     }
 }

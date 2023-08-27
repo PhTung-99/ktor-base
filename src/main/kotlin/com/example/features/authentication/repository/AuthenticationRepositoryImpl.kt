@@ -1,13 +1,14 @@
 package com.example.features.authentication.repository
 
-import com.example.data.models.BaseMessageCode
+import com.example.authentication.JWTUltis
+import com.example.constants.BaseMessageCode
 import com.example.data.models.BaseResponse
-import com.example.data.models.HttpResponse
 import com.example.data.user.dao.UserDAO
 import com.example.data.user.models.User
 import com.example.features.authentication.constants.AuthenticationMessageCode
-import com.example.features.authentication.models.LoginRequest
-import com.example.features.authentication.models.SignupRequest
+import com.example.features.authentication.models.requests.LoginRequest
+import com.example.features.authentication.models.requests.SignupRequest
+import com.example.features.authentication.models.responses.LoginResponse
 import io.ktor.http.*
 import org.mindrot.jbcrypt.BCrypt
 
@@ -16,11 +17,10 @@ class AuthenticationRepositoryImpl(
 ): AuthenticationRepository {
 
     private suspend fun isEmailAvailable(email: String): Boolean {
-        val count = userDAO.countEmailUsed(email)
-        return count != 0L
+        return !userDAO.emailUsed(email)
     }
 
-    override suspend fun signup(signupRequest: SignupRequest): BaseResponse<User?> {
+    override suspend fun signup(signupRequest: SignupRequest): Pair<HttpStatusCode,BaseResponse<User?>> {
         return if (isEmailAvailable(signupRequest.email)) {
             val hashedPassword = BCrypt.hashpw(signupRequest.password, BCrypt.gensalt())
             val user = userDAO.createUser(
@@ -29,28 +29,27 @@ class AuthenticationRepositoryImpl(
                 password = hashedPassword
             )
             return if (user != null) {
-                BaseResponse(
-                    httpStatusCode = HttpStatusCode.Created,
-                    response = HttpResponse(
+                Pair(
+                    HttpStatusCode.Created,
+                    BaseResponse(
                         data = user,
                         messageCode = AuthenticationMessageCode.SIGNUP_SUCCESS
                     )
                 )
             }
             else {
-                BaseResponse(
-                    httpStatusCode = HttpStatusCode.InternalServerError,
-                    response = HttpResponse(
-                        data = null,
+                Pair(
+                    HttpStatusCode.InternalServerError,
+                    BaseResponse(
                         messageCode = AuthenticationMessageCode.SIGNUP_FAIL
                     )
                 )
             }
         }
         else {
-            BaseResponse(
-                httpStatusCode = HttpStatusCode.BadRequest,
-                response = HttpResponse(
+            Pair(
+                HttpStatusCode.BadRequest,
+                BaseResponse(
                     data = null,
                     messageCode = AuthenticationMessageCode.EMAIL_USED
                 )
@@ -58,34 +57,38 @@ class AuthenticationRepositoryImpl(
         }
     }
 
-    override suspend fun login(loginRequest: LoginRequest): BaseResponse<User?> {
+    override suspend fun login(loginRequest: LoginRequest): Pair<HttpStatusCode,BaseResponse<LoginResponse?>> {
         val user = userDAO.getUserByEmail(loginRequest.email)
         return if (user != null) {
             val isPasswordCorrect = BCrypt.checkpw(loginRequest.password, user.password)
             return if (isPasswordCorrect) {
-                BaseResponse(
-                    httpStatusCode = HttpStatusCode.OK,
-                    response = HttpResponse(
-                        data = user,
+                val token = JWTUltis.generateToken(user)
+                val refreshToken = JWTUltis.generateReToken(user)
+                val loginResponse = LoginResponse(
+                    token = token,
+                    refreshToken = refreshToken,
+                )
+                Pair(
+                    HttpStatusCode.OK,
+                    BaseResponse(
+                        data = loginResponse,
                         messageCode = BaseMessageCode.READ_SUCCESS
                     )
                 )
             }
             else {
-                BaseResponse(
-                    httpStatusCode = HttpStatusCode.BadRequest,
-                    response = HttpResponse(
-                        data = null,
+                Pair(
+                    HttpStatusCode.BadRequest,
+                    BaseResponse(
                         messageCode = AuthenticationMessageCode.PASSWORD_WRONG
                     )
                 )
             }
         }
         else {
-            BaseResponse(
-                httpStatusCode = HttpStatusCode.BadRequest,
-                response = HttpResponse(
-                    data = null,
+            Pair(
+                HttpStatusCode.BadRequest,
+                BaseResponse(
                     messageCode = AuthenticationMessageCode.EMAIL_NOT_FOUND
                 )
             )

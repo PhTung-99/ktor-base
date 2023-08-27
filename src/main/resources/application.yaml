@@ -16,6 +16,7 @@ postgres:
 
 jwt:
     secret: "jwt-secret-is-very-extremely-secret"
+    refreshSecret: "refresh-jwt-secret-is-very-extremely-secret"
     issuer: "http://0.0.0.0:8080/"
     audience: "http://0.0.0.0:8080/hello"
     realm: "i don't know what realm is :)"
