@@ -1,8 +1,8 @@
 package com.example.features.user.repository
 
 import com.example.data.models.BaseResponse
-import com.example.data.user.dao.UserDAO
-import com.example.data.user.models.User
+import com.example.data.features.user.dao.UserDAO
+import com.example.data.features.user.models.User
 import com.example.features.user.constants.UserMessageCode
 import io.ktor.http.*
 import java.util.*

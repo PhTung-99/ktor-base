@@ -1,7 +1,7 @@
 package com.example.data.database
 
-import com.example.data.user.entity.UserEntity
-import com.example.data.user.entity.UserTokenEntity
+import com.example.data.features.user.entity.UserEntity
+import com.example.data.features.user.entity.UserTokenEntity
 import com.example.property.AppProperties
 import kotlinx.coroutines.Dispatchers
 import org.jetbrains.exposed.sql.Database

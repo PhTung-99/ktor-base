@@ -3,14 +3,15 @@ package com.example.features.authentication.repository
 import com.example.authentication.JWTUltis
 import com.example.constants.BaseMessageCode
 import com.example.data.models.BaseResponse
-import com.example.data.user.dao.UserDAO
-import com.example.data.user.models.User
+import com.example.data.features.user.dao.UserDAO
+import com.example.data.features.user.models.User
 import com.example.features.authentication.constants.AuthenticationMessageCode
 import com.example.features.authentication.models.requests.LoginRequest
 import com.example.features.authentication.models.requests.SignupRequest
 import com.example.features.authentication.models.responses.LoginResponse
 import io.ktor.http.*
 import org.mindrot.jbcrypt.BCrypt
+import java.util.UUID
 
 class AuthenticationRepositoryImpl(
     private val userDAO: UserDAO
@@ -64,6 +65,7 @@ class AuthenticationRepositoryImpl(
             return if (isPasswordCorrect) {
                 val token = JWTUltis.generateToken(user)
                 val refreshToken = JWTUltis.generateReToken(user)
+                saveTokenToDB(userId = user.id, refreshToken = refreshToken)
                 val loginResponse = LoginResponse(
                     token = token,
                     refreshToken = refreshToken,
@@ -93,5 +95,10 @@ class AuthenticationRepositoryImpl(
                 )
             )
         }
+    }
+
+
+    private suspend fun saveTokenToDB(refreshToken: String, userId: UUID) {
+        userDAO.saveRefreshToken(userId, refreshToken)
     }
 }

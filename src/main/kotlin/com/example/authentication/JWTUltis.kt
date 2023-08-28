@@ -3,7 +3,7 @@ package com.example.authentication
 import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTVerifier
 import com.auth0.jwt.algorithms.Algorithm
-import com.example.data.user.models.User
+import com.example.data.features.user.models.User
 import com.example.property.AppProperties
 import java.util.*
 

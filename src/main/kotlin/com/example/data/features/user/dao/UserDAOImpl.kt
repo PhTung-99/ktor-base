@@ -1,10 +1,13 @@
-package com.example.data.user.dao
+package com.example.data.features.user.dao
 
 import com.example.data.database.DatabaseFactory.dbQuery
-import com.example.data.user.entity.UserEntity
-import com.example.data.user.mapper.resultRowToUser
-import com.example.data.user.mapper.resultRowToUserWithPassword
-import com.example.data.user.models.User
+import com.example.data.features.user.entity.UserEntity
+import com.example.data.features.user.entity.UserTokenEntity
+import com.example.data.features.user.mapper.resultRowToUser
+import com.example.data.features.user.mapper.resultRowToUserWithPassword
+import com.example.data.features.user.mapper.userTokenEntityToModel
+import com.example.data.features.user.models.User
+import com.example.data.features.user.models.UserToken
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import java.util.*
@@ -39,5 +42,13 @@ class UserDAOImpl(): UserDAO {
             UserEntity.id eq id
         }
         return@dbQuery user.singleOrNull()?.let(::resultRowToUser)
+    }
+
+    override suspend fun saveRefreshToken(userId: UUID, refreshToken: String): UserToken? = dbQuery {
+        val createStatement = UserTokenEntity.insert {
+            it[UserTokenEntity.userId] = userId
+            it[UserTokenEntity.refreshToken] = refreshToken
+        }
+        createStatement.resultedValues?.singleOrNull()?.let(::userTokenEntityToModel)
     }
 }
