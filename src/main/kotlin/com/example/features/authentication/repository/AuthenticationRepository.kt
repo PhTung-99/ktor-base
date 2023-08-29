@@ -14,6 +14,6 @@ interface AuthenticationRepository {
     suspend fun login(loginRequest: LoginRequest): Pair<HttpStatusCode,BaseResponse<LoginResponse?>>
     suspend fun refreshToken(
         userId: UUID,
-        refreshRequest: String,
+        refreshToken: String,
     ): Pair<HttpStatusCode,BaseResponse<LoginResponse?>>
 }

@@ -28,6 +28,8 @@ object AppProperties {
             issuer = config.property("jwt.issuer").getString(),
             audience = config.property("jwt.audience").getString(),
             realm = config.property("jwt.realm").getString(),
+            expireMinutes = config.property("jwt.expireMinutes").getString().toInt(),
+            expireRefreshMinutes = config.property("jwt.expireRefreshMinutes").getString().toInt(),
         )
     }
 

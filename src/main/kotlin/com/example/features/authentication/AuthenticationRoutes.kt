@@ -1,6 +1,6 @@
 package com.example.features.authentication
 
-import com.example.authentication.JWTUltis
+import com.example.authentication.JWTUtils
 import com.example.features.authentication.models.requests.LoginRequest
 import com.example.features.authentication.models.requests.RefreshRequest
 import com.example.features.authentication.models.requests.SignupRequest
@@ -37,7 +37,7 @@ fun Route.authenticationRoute() {
             post("refresh") {
                 val principal = call.principal<JWTPrincipal>()
                 val request = call.receive<RefreshRequest>()
-                val userId = JWTUltis.getClaim(principal!!, JWTUltis.USER_ID_KEY)
+                val userId = JWTUtils.getClaim(principal!!, JWTUtils.USER_ID_KEY)
                 val uuid = UUID.fromString(userId)
                 val response = authenticationRepository.refreshToken(uuid, request.refreshToken)
                 call.respond(response.first, response.second)

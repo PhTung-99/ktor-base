@@ -17,6 +17,8 @@ postgres:
 jwt:
     secret: "jwt-secret-is-very-extremely-secret"
     refreshSecret: "refresh-jwt-secret-is-very-extremely-secret"
+    expireMinutes: "60"
+    expireRefreshMinutes: "43200"   #    30 days
     issuer: "http://0.0.0.0:8080/"
     audience: "http://0.0.0.0:8080/hello"
     realm: "i don't know what realm is :)"

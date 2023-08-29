@@ -1,6 +1,6 @@
 package com.example.features.authentication.repository
 
-import com.example.authentication.JWTUltis
+import com.example.authentication.JWTUtils
 import com.example.constants.BaseMessageCode
 import com.example.data.models.BaseResponse
 import com.example.data.features.user.dao.UserDAO
@@ -16,7 +16,7 @@ import java.util.UUID
 
 class AuthenticationRepositoryImpl(
     private val userDAO: UserDAO,
-    private val userTokenDAO: UserTokenDAO
+    private val userTokenDAO: UserTokenDAO,
 ): AuthenticationRepository {
 
     private suspend fun isEmailAvailable(email: String): Boolean {
@@ -88,21 +88,23 @@ class AuthenticationRepositoryImpl(
 
     override suspend fun refreshToken(
         userId: UUID,
-        refreshRequest: String,
+        refreshToken: String,
     ): Pair<HttpStatusCode,BaseResponse<LoginResponse?>> {
-        val lastToken = userTokenDAO.getRefreshTokenByUserId(userId)
-        val user = userDAO.getUserById(userId)
-
-        if (lastToken != null && user != null) {
-            if (lastToken.refreshToken == refreshRequest) {
-                return onLogin(user)
+        val isRefreshValid = JWTUtils.isTokenValid(refreshToken)
+        if (isRefreshValid) {
+            val lastToken = userTokenDAO.getRefreshTokenByUserId(userId)
+            val user = userDAO.getUserById(userId)
+            if (lastToken != null && user != null) {
+                if (lastToken.refreshToken == refreshToken) {
+                    return onLogin(user)
+                }
             }
         }
+
         return Pair(
             HttpStatusCode.BadRequest,
             BaseResponse()
         )
-
     }
 
 
@@ -111,8 +113,8 @@ class AuthenticationRepositoryImpl(
     }
 
     private suspend fun onGenerateToken(user: User): Pair<String, String> {
-        val token = JWTUltis.generateToken(user)
-        val refreshToken = JWTUltis.generateReToken(user)
+        val token = JWTUtils.generateToken(user)
+        val refreshToken = JWTUtils.generateReToken(user)
         saveTokenToDB(userId = user.id, refreshToken = refreshToken)
         return Pair(token, refreshToken)
     }

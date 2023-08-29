@@ -12,7 +12,7 @@ fun Application.configAuthentication() {
 
     install(Authentication) {
         jwt("auth-jwt") {
-            verifier(JWTUltis.verifier)
+            verifier(JWTUtils.verifier)
             validate { jwtCredential ->
                 val userId = jwtCredential.payload.getClaim("userId").asString()
                 if (userId != "") {

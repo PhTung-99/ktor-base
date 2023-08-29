@@ -8,7 +8,7 @@ import com.example.property.AppProperties
 import io.ktor.server.auth.jwt.*
 import java.util.*
 
-object JWTUltis {
+object JWTUtils {
 
     const val USER_ID_KEY = "userId"
 
@@ -44,10 +44,19 @@ object JWTUltis {
         return principal.payload.getClaim(key).asString()
     }
 
+    fun isTokenValid(token: String): Boolean {
+        return try {
+            verifier.verify(token)
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
 
 
-    private const val validityInMs = 3600000 // 1 hour
-    private const val validityRefreshInMs = 86_400_000  // 1 hour
+
+    val validityInMs = properties.expireMinutes * 60 * 1000 // 1 hour
+    val validityRefreshInMs = properties.expireRefreshMinutes * 60 * 1000  // 1 hour
 
     private fun getExpiration() = Date(System.currentTimeMillis() + validityInMs)
 
