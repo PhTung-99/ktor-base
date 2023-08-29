@@ -16,5 +16,4 @@ data class UserToken(
     val userId: UUID,
     @Serializable(with = InstantSerializer::class)
     val createAtUTC: Instant,
-    val isDeleted: Boolean,
 )

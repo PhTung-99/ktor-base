@@ -5,7 +5,7 @@ import com.example.data.features.user.entity.UserEntity
 import com.example.data.features.user.entity.UserTokenEntity
 import com.example.data.features.user.mapper.resultRowToUser
 import com.example.data.features.user.mapper.resultRowToUserWithPassword
-import com.example.data.features.user.mapper.userTokenEntityToModel
+import com.example.data.features.user.mapper.resultRowToUserToken
 import com.example.data.features.user.models.User
 import com.example.data.features.user.models.UserToken
 import org.jetbrains.exposed.sql.insert
@@ -49,6 +49,6 @@ class UserDAOImpl(): UserDAO {
             it[UserTokenEntity.userId] = userId
             it[UserTokenEntity.refreshToken] = refreshToken
         }
-        createStatement.resultedValues?.singleOrNull()?.let(::userTokenEntityToModel)
+        createStatement.resultedValues?.singleOrNull()?.let(::resultRowToUserToken)
     }
 }

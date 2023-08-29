@@ -1,13 +1,18 @@
 package com.example.features.authentication
 
+import com.example.authentication.JWTUltis
 import com.example.features.authentication.models.requests.LoginRequest
+import com.example.features.authentication.models.requests.RefreshRequest
 import com.example.features.authentication.models.requests.SignupRequest
 import com.example.features.authentication.repository.AuthenticationRepository
 import io.ktor.server.application.*
+import io.ktor.server.auth.*
+import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
+import java.util.*
 
 fun Route.authenticationRoute() {
 
@@ -24,6 +29,19 @@ fun Route.authenticationRoute() {
             val request = call.receive<LoginRequest>()
             val response = authenticationRepository.login(request)
             call.respond(response.first, response.second)
+        }
+
+
+
+        authenticate("auth-jwt") {
+            post("refresh") {
+                val principal = call.principal<JWTPrincipal>()
+                val request = call.receive<RefreshRequest>()
+                val userId = JWTUltis.getClaim(principal!!, JWTUltis.USER_ID_KEY)
+                val uuid = UUID.fromString(userId)
+                val response = authenticationRepository.refreshToken(uuid, request.refreshToken)
+                call.respond(response.first, response.second)
+            }
         }
     }
 }

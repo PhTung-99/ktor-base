@@ -6,10 +6,14 @@ import com.example.features.authentication.models.requests.LoginRequest
 import com.example.features.authentication.models.requests.SignupRequest
 import com.example.features.authentication.models.responses.LoginResponse
 import io.ktor.http.*
+import java.util.UUID
 
 
 interface AuthenticationRepository {
     suspend fun signup(signupRequest: SignupRequest): Pair<HttpStatusCode,BaseResponse<User?>>
     suspend fun login(loginRequest: LoginRequest): Pair<HttpStatusCode,BaseResponse<LoginResponse?>>
-
+    suspend fun refreshToken(
+        userId: UUID,
+        refreshRequest: String,
+    ): Pair<HttpStatusCode,BaseResponse<LoginResponse?>>
 }

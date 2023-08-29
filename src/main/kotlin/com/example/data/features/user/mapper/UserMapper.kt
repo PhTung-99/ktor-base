@@ -24,10 +24,9 @@ fun resultRowToUser(row: ResultRow) = User(
     isDeleted = row[UserEntity.isDeleted],
 )
 
-fun userTokenEntityToModel(row: ResultRow) = UserToken(
+fun resultRowToUserToken(row: ResultRow) = UserToken(
     id = row[UserTokenEntity.id].value,
     refreshToken = row[UserTokenEntity.refreshToken],
     userId =  row[UserTokenEntity.userId].value,
     createAtUTC = row[UserTokenEntity.createAtUTC],
-    isDeleted = row[UserTokenEntity.isDeleted],
 )

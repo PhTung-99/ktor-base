@@ -15,10 +15,10 @@ fun main(args: Array<String>) {
 
 fun Application.module() {
     AppProperties.init(environment.config)
+    DatabaseFactory.init()
     configureSerializable()
     configureLogging()
     configureKoin()
     configAuthentication()
-    DatabaseFactory.init()
     configureRouting()
 }

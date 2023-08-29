@@ -5,5 +5,5 @@ import com.example.features.authentication.repository.AuthenticationRepositoryIm
 import org.koin.dsl.module
 
 val authenticationModule = module {
-    single<AuthenticationRepository> { AuthenticationRepositoryImpl(get()) }
+    single<AuthenticationRepository> { AuthenticationRepositoryImpl(get(), get()) }
 }

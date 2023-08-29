@@ -24,6 +24,5 @@ fun Route.userRoutes() {
                 call.respond(response.first, response.second)
             }
         }
-
     }
 }
