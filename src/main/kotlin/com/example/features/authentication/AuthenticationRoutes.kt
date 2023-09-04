@@ -8,6 +8,7 @@ import com.example.features.authentication.models.requests.RefreshRequest
 import com.example.features.authentication.models.requests.SignupRequest
 import com.example.features.authentication.repository.AuthenticationRepository
 import io.ktor.http.*
+import io.ktor.http.content.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
@@ -24,11 +25,28 @@ fun Route.authenticationRoute() {
 
     route("/authentication") {
         post("signup") {
-            val parameters = call.receiveParameters()
+            val multipart  = call.receiveMultipart()
+            var email: String? = null
+            var password: String? = null
+            var name: String? = null
+
+            multipart.forEachPart { part ->
+                when (part) {
+                    is PartData.FormItem -> {
+                        when (part.name) {
+                            "email" -> email = part.value
+                            "password" -> password = part.value
+                            "name" -> name = part.value
+                        }
+                    }
+                    else -> {}
+                }
+                part.dispose()
+            }
             if (
-                parameters["email"].isNullOrBlank() ||
-                parameters["password"].isNullOrBlank() ||
-                parameters["name"].isNullOrBlank()
+                email.isNullOrBlank() ||
+                password.isNullOrBlank() ||
+                name.isNullOrBlank()
             ) {
                 call.respond(
                     HttpStatusCode.BadRequest,
@@ -39,9 +57,9 @@ fun Route.authenticationRoute() {
             }
             else {
                 val request = SignupRequest(
-                    email = parameters["email"]!!,
-                    password = parameters["password"]!!,
-                    name = parameters["name"]!!,
+                    email = email!!,
+                    password =password!!,
+                    name = name!!,
                 )
                 val response = authenticationRepository.signup(request)
                 call.respond(response.first, response.second)
