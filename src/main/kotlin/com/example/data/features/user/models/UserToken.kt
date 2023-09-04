@@ -1,7 +1,6 @@
 package com.example.data.features.user.models
 
-import com.example.plugin.serializable.custom.InstantSerializer
-import com.example.plugin.serializable.custom.UUIDSerializer
+import com.example.plugin.serializable.custom.*
 import kotlinx.serialization.Serializable
 import java.time.Instant
 

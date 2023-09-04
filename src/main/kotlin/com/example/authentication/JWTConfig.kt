@@ -1,6 +1,7 @@
 package com.example.authentication
 
 import com.example.constants.Expressions
+import com.example.features.authentication.constants.AuthenticationMessageCode
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -28,7 +29,9 @@ fun Application.configAuthentication() {
             }
 
             challenge { _, _ ->
-                call.respond(HttpStatusCode.Unauthorized, "Token is not valid or has expired")
+                call.respond(HttpStatusCode.Unauthorized, mapOf(
+                    "messageCode" to AuthenticationMessageCode.INVALID_TOKEN)
+                )
             }
         }
     }

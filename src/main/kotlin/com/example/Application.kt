@@ -2,6 +2,7 @@ package com.example
 
 import com.example.authentication.configAuthentication
 import com.example.data.database.DatabaseFactory
+import com.example.data.validation.validationConfig
 import com.example.di.configureKoin
 import com.example.logging.configureLogging
 import com.example.property.AppProperties
@@ -16,6 +17,7 @@ fun main(args: Array<String>) {
 fun Application.module() {
     AppProperties.init(environment.config)
     DatabaseFactory.init()
+    validationConfig()
     configureSerializable()
     configureLogging()
     configureKoin()

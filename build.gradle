@@ -29,6 +29,8 @@ dependencies {
     implementation "io.ktor:ktor-server-auth:$ktor_version"
     implementation "io.ktor:ktor-server-auth-jwt:$ktor_version"
 
+    implementation "io.ktor:ktor-server-status-pages:$ktor_version"
+
     // Logging
     implementation("io.ktor:ktor-server-call-logging:$ktor_version")
 
@@ -41,7 +43,6 @@ dependencies {
     implementation "org.jetbrains.exposed:exposed-core:$exposed_version"
     implementation "org.jetbrains.exposed:exposed-dao:$exposed_version"
     implementation "org.jetbrains.exposed:exposed-jdbc:$exposed_version"
-    implementation "org.jetbrains.exposed:exposed-java-time:$exposed_version"
 
     implementation "org.postgresql:postgresql:$postgresql_version"
 

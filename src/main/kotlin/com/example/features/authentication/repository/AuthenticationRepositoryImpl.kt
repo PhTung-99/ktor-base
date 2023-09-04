@@ -1,7 +1,6 @@
 package com.example.features.authentication.repository
 
 import com.example.authentication.JWTUtils
-import com.example.constants.BaseMessageCode
 import com.example.data.models.BaseResponse
 import com.example.data.features.user.dao.UserDAO
 import com.example.data.features.user.dao.UserTokenDAO
@@ -103,7 +102,9 @@ class AuthenticationRepositoryImpl(
 
         return Pair(
             HttpStatusCode.BadRequest,
-            BaseResponse()
+            BaseResponse(
+                messageCode = AuthenticationMessageCode.INVALID_REFRESH_TOKEN
+            )
         )
     }
 
@@ -130,7 +131,6 @@ class AuthenticationRepositoryImpl(
                 HttpStatusCode.OK,
                 BaseResponse(
                     data = loginResponse,
-                    messageCode = BaseMessageCode.READ_SUCCESS
                 )
             )
         }
