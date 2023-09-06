@@ -30,6 +30,10 @@ fun Route.authenticationRoute() {
             var password: String? = null
             var name: String? = null
 
+            //avatar
+            var fileBytes: ByteArray? = null
+            var originalFileName: String? = null
+
             multipart.forEachPart { part ->
                 when (part) {
                     is PartData.FormItem -> {
@@ -39,6 +43,12 @@ fun Route.authenticationRoute() {
                             "name" -> name = part.value
                         }
                     }
+                    is PartData.FileItem ->{
+                        if (part.name == "avatar") {
+                            fileBytes = part.streamProvider().readBytes()
+                            originalFileName = part.originalFileName
+                        }
+                    }
                     else -> {}
                 }
                 part.dispose()
@@ -46,7 +56,9 @@ fun Route.authenticationRoute() {
             if (
                 email.isNullOrBlank() ||
                 password.isNullOrBlank() ||
-                name.isNullOrBlank()
+                name.isNullOrBlank() ||
+                fileBytes == null ||
+                originalFileName == null
             ) {
                 call.respond(
                     HttpStatusCode.BadRequest,
@@ -61,7 +73,7 @@ fun Route.authenticationRoute() {
                     password =password!!,
                     name = name!!,
                 )
-                val response = authenticationRepository.signup(request)
+                val response = authenticationRepository.signup(request, fileBytes!!, originalFileName!!)
                 call.respond(response.first, response.second)
             }
         }

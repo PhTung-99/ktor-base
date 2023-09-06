@@ -7,6 +7,7 @@ import com.example.di.configureKoin
 import com.example.logging.configureLogging
 import com.example.property.AppProperties
 import com.example.routes.*
+import com.example.utils.fileInit
 import configureSerializable
 import io.ktor.server.application.*
 
@@ -16,6 +17,7 @@ fun main(args: Array<String>) {
 
 fun Application.module() {
     AppProperties.init(environment.config)
+    fileInit()
     DatabaseFactory.init()
     validationConfig()
     configureSerializable()

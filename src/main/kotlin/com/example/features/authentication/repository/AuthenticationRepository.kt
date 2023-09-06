@@ -10,7 +10,11 @@ import java.util.UUID
 
 
 interface AuthenticationRepository {
-    suspend fun signup(signupRequest: SignupRequest): Pair<HttpStatusCode,BaseResponse<User?>>
+    suspend fun signup(
+        signupRequest: SignupRequest,
+        fileByte: ByteArray,
+        originalFileName: String,
+    ): Pair<HttpStatusCode,BaseResponse<User?>>
     suspend fun login(loginRequest: LoginRequest): Pair<HttpStatusCode,BaseResponse<LoginResponse?>>
     suspend fun refreshToken(
         userId: UUID,

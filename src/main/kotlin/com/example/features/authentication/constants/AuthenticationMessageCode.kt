@@ -2,13 +2,10 @@ package com.example.features.authentication.constants
 
 
 object AuthenticationMessageCode {
-    const val featureCode = "authentication"
+    private const val featureCode = "authentication"
 
     // authentication_C_1
     const val SIGNUP_SUCCESS = "${featureCode}-SIGNUP_SUCCESS"
-
-    // authentication_C_0
-    const val SIGNUP_FAIL = "${featureCode}-SIGNUP_FAIL"
 
     // authentication_EMAIL-USED_0
     const val EMAIL_USED = "${featureCode}-EMAIL_USED"

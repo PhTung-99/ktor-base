@@ -21,11 +21,12 @@ class UserDAOImpl(): UserDAO {
         return@dbQuery useEmail.count() > 0L
     }
 
-    override suspend fun createUser(email: String, name: String, password: String): User? = dbQuery {
+    override suspend fun createUser(email: String, name: String, password: String, avatar: String): User? = dbQuery {
         val createStatement = UserEntity.insert {
             it[UserEntity.name] = name
             it[UserEntity.email] = email
             it[UserEntity.password] = password
+            it[UserEntity.avatar] = avatar
         }
         createStatement.resultedValues?.singleOrNull()?.let(::resultRowToUserWithPassword)
     }

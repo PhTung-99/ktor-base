@@ -1,6 +1,7 @@
 package com.example.features.authentication.repository
 
 import com.example.authentication.JWTUtils
+import com.example.constants.Constants
 import com.example.data.models.BaseResponse
 import com.example.data.features.user.dao.UserDAO
 import com.example.data.features.user.dao.UserTokenDAO
@@ -9,8 +10,10 @@ import com.example.features.authentication.constants.AuthenticationMessageCode
 import com.example.features.authentication.models.requests.LoginRequest
 import com.example.features.authentication.models.requests.SignupRequest
 import com.example.features.authentication.models.responses.LoginResponse
+import com.example.utils.saveImage
 import io.ktor.http.*
 import org.mindrot.jbcrypt.BCrypt
+import java.io.File
 import java.util.UUID
 
 class AuthenticationRepositoryImpl(
@@ -22,15 +25,22 @@ class AuthenticationRepositoryImpl(
         return !userDAO.emailUsed(email)
     }
 
-    override suspend fun signup(signupRequest: SignupRequest): Pair<HttpStatusCode,BaseResponse<User?>> {
+    override suspend fun signup(
+        signupRequest: SignupRequest,
+        fileByte: ByteArray,
+        originalFileName: String,
+    ): Pair<HttpStatusCode,BaseResponse<User?>> {
         return if (isEmailAvailable(signupRequest.email)) {
             val hashedPassword = BCrypt.hashpw(signupRequest.password, BCrypt.gensalt())
-            val user = userDAO.createUser(
-                email = signupRequest.email,
-                name = signupRequest.name,
-                password = hashedPassword
-            )
-            return if (user != null) {
+            val avatar = saveImage(fileByte, originalFileName)
+
+            try {
+                val user = userDAO.createUser(
+                    email = signupRequest.email,
+                    name = signupRequest.name,
+                    password = hashedPassword,
+                    avatar = avatar
+                )
                 Pair(
                     HttpStatusCode.Created,
                     BaseResponse(
@@ -39,11 +49,12 @@ class AuthenticationRepositoryImpl(
                     )
                 )
             }
-            else {
+            catch (e: Exception) {
+                File("${Constants.USER_IMAGES_PATH}/$avatar").delete()
                 Pair(
                     HttpStatusCode.InternalServerError,
                     BaseResponse(
-                        messageCode = AuthenticationMessageCode.SIGNUP_FAIL
+                        messageCode = e.message
                     )
                 )
             }
