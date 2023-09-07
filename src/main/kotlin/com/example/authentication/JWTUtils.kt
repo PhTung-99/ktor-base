@@ -4,7 +4,10 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTVerifier
 import com.auth0.jwt.algorithms.Algorithm
 import com.example.data.features.user.models.User
+import com.example.data.redis.RedisClient
 import com.example.property.AppProperties
+import io.ktor.http.auth.*
+import io.ktor.server.application.*
 import io.ktor.server.auth.jwt.*
 import java.util.*
 
@@ -14,12 +17,22 @@ object JWTUtils {
 
     private val properties = AppProperties.jwtProperties
 
-    val verifier: JWTVerifier by lazy {
+    private val verifier: JWTVerifier by lazy {
         JWT
             .require(Algorithm.HMAC256(properties.secret))
             .withAudience(properties.audience)
             .withIssuer(properties.issuer)
             .build()
+    }
+
+    fun baseVerifier(httpAuthHeader: HttpAuthHeader): JWTVerifier? {
+        val token = (httpAuthHeader as HttpAuthHeader.Single).blob
+        if (token.isNotEmpty()) {
+            if (RedisClient.jedis.exists(token)) {
+                return null
+            }
+        }
+        return verifier
     }
 
     fun generateToken(user: User): String {
@@ -57,12 +70,16 @@ object JWTUtils {
         return verifier.verify(token).claims[key]?.asString()
     }
 
-
-
     val validityInMs: Long = properties.expireMinutes * 60L * 1000L // 1 hour
     val validityRefreshInMs: Long = properties.expireRefreshMinutes * 60L * 1000L  //  30 days
 
     private fun getExpiration() = Date(System.currentTimeMillis() + validityInMs)
 
     private fun getRefreshExpiration() = Date(System.currentTimeMillis() + validityRefreshInMs)
+
 }
+
+fun ApplicationCall.getToken(): String? {
+    return request.headers["Authorization"]?.removePrefix("Bearer ")
+}
+

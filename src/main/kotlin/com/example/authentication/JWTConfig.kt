@@ -13,7 +13,9 @@ fun Application.configAuthentication() {
 
     install(Authentication) {
         jwt("auth-jwt") {
-            verifier(JWTUtils.verifier)
+            verifier {
+                httpAuthHeader -> JWTUtils.baseVerifier(httpAuthHeader)
+            }
             validate { jwtCredential ->
                 val userId = jwtCredential.payload.getClaim("userId").asString()
                 if (userId != "") {

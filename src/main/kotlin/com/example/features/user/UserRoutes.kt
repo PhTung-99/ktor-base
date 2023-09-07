@@ -1,5 +1,6 @@
 package com.example.features.user
 
+import com.example.authentication.getToken
 import com.example.features.user.repository.UserRepository
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -19,6 +20,7 @@ fun Route.userRoutes() {
         authenticate("auth-jwt") {
             get("info") {
                 val principal = call.principal<JWTPrincipal>()
+                println(call.getToken())
                 val username = principal!!.payload.getClaim("userId").asString()
                 val response = userRepository.getUserInfo(UUID.fromString(username))
                 call.respond(response.first, response.second)

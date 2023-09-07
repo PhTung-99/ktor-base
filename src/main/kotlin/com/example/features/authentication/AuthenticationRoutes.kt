@@ -1,6 +1,7 @@
 package com.example.features.authentication
 
 import com.example.authentication.JWTUtils
+import com.example.authentication.getToken
 import com.example.data.models.BaseResponse
 import com.example.features.authentication.constants.AuthenticationMessageCode
 import com.example.features.authentication.models.requests.LoginRequest
@@ -112,7 +113,7 @@ fun Route.authenticationRoute() {
 
         authenticate("auth-jwt") {
             post("logout") {
-                val token = call.request.header("Authorization")?.removePrefix("Bearer ")
+                val token = call.getToken()
                 val request = call.receive<LogoutRequest>()
                 val response = authenticationRepository.logout(token!!, request.refreshToken)
                 call.respond(response.first, response.second)
