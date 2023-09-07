@@ -6,10 +6,12 @@ object AppProperties {
 
     lateinit var postgresProperties: PostgresProperties
     lateinit var jwtProperties: JWTProperties
+    lateinit var redisProperty: RedisProperty
 
     fun init(applicationConfig: ApplicationConfig) {
         initPostgresProperties(applicationConfig)
         initJWTProperties(applicationConfig)
+        initRedisProperties(applicationConfig)
     }
 
     private fun initPostgresProperties(config: ApplicationConfig) {
@@ -30,6 +32,13 @@ object AppProperties {
             realm = config.property("jwt.realm").getString(),
             expireMinutes = config.property("jwt.expireMinutes").getString().toInt(),
             expireRefreshMinutes = config.property("jwt.expireRefreshMinutes").getString().toInt(),
+        )
+    }
+
+    private fun initRedisProperties(config: ApplicationConfig) {
+        redisProperty = RedisProperty(
+            host = config.property("redis.host").getString(),
+            port = config.property("redis.port").getString().toInt()
         )
     }
 

@@ -40,11 +40,15 @@ dependencies {
     // coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinx_coroutines_version"
 
+    // database
     implementation "org.jetbrains.exposed:exposed-core:$exposed_version"
     implementation "org.jetbrains.exposed:exposed-dao:$exposed_version"
     implementation "org.jetbrains.exposed:exposed-jdbc:$exposed_version"
 
     implementation "org.postgresql:postgresql:$postgresql_version"
+
+    //jedis
+    implementation "redis.clients:jedis:$jedis_version"
 
     implementation "io.insert-koin:koin-ktor:$koin_version"
 
