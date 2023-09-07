@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class LoginResponse(
     val token: String,
-    val expiredAt: Int = JWTUtils.validityInMs,
+    val expiredAt: Long = JWTUtils.validityInMs,
     val refreshToken: String,
-    val refreshExpiredAt: Int = JWTUtils.validityRefreshInMs,
+    val refreshExpiredAt: Long = JWTUtils.validityRefreshInMs,
 )

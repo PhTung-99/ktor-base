@@ -6,6 +6,6 @@ data class JWTProperties (
     val issuer: String,
     val audience: String,
     val realm: String,
-    val expireMinutes: Int,
-    val expireRefreshMinutes: Int,
+    val expireMinutes: Long,
+    val expireRefreshMinutes: Long,
 )

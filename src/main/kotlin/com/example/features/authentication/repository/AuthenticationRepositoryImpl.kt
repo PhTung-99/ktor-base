@@ -6,6 +6,7 @@ import com.example.data.models.BaseResponse
 import com.example.data.features.user.dao.UserDAO
 import com.example.data.features.user.dao.UserTokenDAO
 import com.example.data.features.user.models.User
+import com.example.data.redis.RedisClient
 import com.example.features.authentication.constants.AuthenticationMessageCode
 import com.example.features.authentication.models.requests.LoginRequest
 import com.example.features.authentication.models.requests.SignupRequest
@@ -119,6 +120,20 @@ class AuthenticationRepositoryImpl(
         )
     }
 
+    override suspend fun logout(token: String, refreshToken: String): Pair<HttpStatusCode, BaseResponse<Boolean>> {
+        return try {
+            val isRefreshValid = JWTUtils.isTokenValid(refreshToken)
+            if (isRefreshValid) {
+                RedisClient.jedis.setex(token, JWTUtils.validityInMs,"revoked")
+                RedisClient.jedis.setex(refreshToken, JWTUtils.validityInMs,"revoked")
+                Pair(HttpStatusCode.OK, BaseResponse(data = true))
+            } else {
+                Pair(HttpStatusCode.BadRequest, BaseResponse(data = false, messageCode = AuthenticationMessageCode.INVALID_REFRESH_TOKEN))
+            }
+        } catch (e: Exception) {
+            Pair(HttpStatusCode.InternalServerError, BaseResponse(data = false, messageCode = e.message))
+        }
+    }
 
     private suspend fun saveTokenToDB(refreshToken: String, userId: UUID) {
         userDAO.saveRefreshToken(userId, refreshToken)

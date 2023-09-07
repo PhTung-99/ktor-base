@@ -42,8 +42,8 @@ object AppProperties {
             issuer = config.property("$path.issuer").getString(),
             audience = config.property("$path.audience").getString(),
             realm = config.property("$path.realm").getString(),
-            expireMinutes = config.property("$path.expireMinutes").getString().toInt(),
-            expireRefreshMinutes = config.property("$path.expireRefreshMinutes").getString().toInt(),
+            expireMinutes = config.property("$path.expireMinutes").getString().toLong(),
+            expireRefreshMinutes = config.property("$path.expireRefreshMinutes").getString().toLong(),
         )
     }
 

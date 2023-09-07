@@ -4,6 +4,7 @@ import com.example.authentication.JWTUtils
 import com.example.data.models.BaseResponse
 import com.example.features.authentication.constants.AuthenticationMessageCode
 import com.example.features.authentication.models.requests.LoginRequest
+import com.example.features.authentication.models.requests.LogoutRequest
 import com.example.features.authentication.models.requests.RefreshRequest
 import com.example.features.authentication.models.requests.SignupRequest
 import com.example.features.authentication.repository.AuthenticationRepository
@@ -11,7 +12,6 @@ import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
-import io.ktor.server.auth.jwt.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -101,13 +101,20 @@ fun Route.authenticationRoute() {
             }
         }
 
+        post("refresh") {
+            val request = call.receive<RefreshRequest>()
+            val userId = JWTUtils.getClaimByToken(request.refreshToken, JWTUtils.USER_ID_KEY)
+            val uuid = UUID.fromString(userId)
+            val response = authenticationRepository.refreshToken(uuid, request.refreshToken)
+            call.respond(response.first, response.second)
+            call.respond(HttpStatusCode.OK)
+        }
+
         authenticate("auth-jwt") {
-            post("refresh") {
-                val principal = call.principal<JWTPrincipal>()
-                val request = call.receive<RefreshRequest>()
-                val userId = JWTUtils.getClaim(principal!!, JWTUtils.USER_ID_KEY)
-                val uuid = UUID.fromString(userId)
-                val response = authenticationRepository.refreshToken(uuid, request.refreshToken)
+            post("logout") {
+                val token = call.request.header("Authorization")?.removePrefix("Bearer ")
+                val request = call.receive<LogoutRequest>()
+                val response = authenticationRepository.logout(token!!, request.refreshToken)
                 call.respond(response.first, response.second)
             }
         }

@@ -53,10 +53,14 @@ object JWTUtils {
         }
     }
 
+    fun getClaimByToken(token: String, key: String): String? {
+        return verifier.verify(token).claims[key]?.asString()
+    }
 
 
-    val validityInMs = properties.expireMinutes * 60 * 1000 // 1 hour
-    val validityRefreshInMs = properties.expireRefreshMinutes * 60 * 1000  // 1 hour
+
+    val validityInMs: Long = properties.expireMinutes * 60L * 1000L // 1 hour
+    val validityRefreshInMs: Long = properties.expireRefreshMinutes * 60L * 1000L  //  30 days
 
     private fun getExpiration() = Date(System.currentTimeMillis() + validityInMs)
 
