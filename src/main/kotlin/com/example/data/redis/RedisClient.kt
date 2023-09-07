@@ -9,16 +9,13 @@ object RedisClient {
     lateinit var jedis: Jedis
 
     fun init() {
-        val jedisPool = JedisPool(AppProperties.redisProperty.host, AppProperties.redisProperty.port)
-        jedis = jedisPool.resource
         try {
+            val jedisPool = JedisPool(AppProperties.redisProperty.host, AppProperties.redisProperty.port)
+            jedis = jedisPool.resource
             val response = jedis.ping()
             isConnected = response == "PONG"
         } catch (e: Exception) {
             println("Error: ${e.message}")
-        } finally {
-            jedis.close()
-            jedisPool.close()
         }
     }
 }

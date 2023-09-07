@@ -6,6 +6,8 @@ services:
     depends_on:
       postgres_db:
         condition: service_healthy
+      redis:
+        condition: service_healthy
   postgres_db:
     image: postgres
     volumes:
@@ -18,4 +20,11 @@ services:
       - "54333:5432"
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 1s
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
       interval: 1s
