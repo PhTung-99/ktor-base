@@ -13,8 +13,8 @@ interface AuthenticationRepository {
 
     suspend fun signup(
         signupRequest: SignupRequest,
-        fileByte: ByteArray,
-        originalFileName: String,
+        fileByte: ByteArray?,
+        originalFileName: String?,
     ): Pair<HttpStatusCode,BaseResponse<User?>>
     suspend fun login(loginRequest: LoginRequest): Pair<HttpStatusCode,BaseResponse<LoginResponse?>>
 

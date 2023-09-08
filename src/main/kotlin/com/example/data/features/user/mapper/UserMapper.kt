@@ -14,7 +14,9 @@ fun resultRowToUserWithPassword(row: ResultRow) = User(
     email = row[UserEntity.email],
     password = row[UserEntity.password],
     createAtUTC = row[UserEntity.createAtUTC],
-    avatar = Constants.USER_IMAGES_ROUTE + row[UserEntity.avatar],
+    avatar = row[UserEntity.avatar]?.let {
+        return@let Constants.USER_IMAGES_ROUTE + row[UserEntity.avatar]
+    },
     isDeleted = row[UserEntity.isDeleted],
 )
 
@@ -23,7 +25,9 @@ fun resultRowToUser(row: ResultRow) = User(
     name = row[UserEntity.name],
     email = row[UserEntity.email],
     createAtUTC = row[UserEntity.createAtUTC],
-    avatar = Constants.USER_IMAGES_ROUTE + row[UserEntity.avatar],
+    avatar = row[UserEntity.avatar]?.let {
+     return@let Constants.USER_IMAGES_ROUTE + row[UserEntity.avatar]
+    },
     isDeleted = row[UserEntity.isDeleted],
 )
 

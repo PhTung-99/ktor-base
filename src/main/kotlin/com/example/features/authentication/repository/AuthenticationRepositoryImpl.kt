@@ -28,12 +28,15 @@ class AuthenticationRepositoryImpl(
 
     override suspend fun signup(
         signupRequest: SignupRequest,
-        fileByte: ByteArray,
-        originalFileName: String,
+        fileByte: ByteArray?,
+        originalFileName: String?,
     ): Pair<HttpStatusCode,BaseResponse<User?>> {
         return if (isEmailAvailable(signupRequest.email)) {
             val hashedPassword = BCrypt.hashpw(signupRequest.password, BCrypt.gensalt())
-            val avatar = saveImage(fileByte, originalFileName)
+            var avatar: String? = null
+            if (fileByte != null && originalFileName != null) {
+                avatar = saveImage(fileByte, originalFileName)
+            }
 
             try {
                 val user = userDAO.createUser(
@@ -51,7 +54,9 @@ class AuthenticationRepositoryImpl(
                 )
             }
             catch (e: Exception) {
-                File("${Constants.USER_IMAGES_PATH}/$avatar").delete()
+                avatar?.let {
+                    File("${Constants.USER_IMAGES_PATH}/$avatar").delete()
+                }
                 Pair(
                     HttpStatusCode.InternalServerError,
                     BaseResponse(

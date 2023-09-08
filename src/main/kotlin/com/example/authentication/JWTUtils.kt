@@ -8,12 +8,12 @@ import com.example.data.redis.RedisClient
 import com.example.property.AppProperties
 import io.ktor.http.auth.*
 import io.ktor.server.application.*
-import io.ktor.server.auth.jwt.*
 import java.util.*
 
 object JWTUtils {
 
     const val USER_ID_KEY = "userId"
+    const val CONFIGURATIONS_KEY = "auth-jwt"
 
     private val properties = AppProperties.jwtProperties
 
@@ -27,10 +27,15 @@ object JWTUtils {
 
     fun baseVerifier(httpAuthHeader: HttpAuthHeader): JWTVerifier? {
         val token = (httpAuthHeader as HttpAuthHeader.Single).blob
-        if (token.isNotEmpty()) {
-            if (RedisClient.jedis.exists(token)) {
-                return null
+        try {
+            if (token.isNotEmpty()) {
+                if (RedisClient.jedis.exists(token)) {
+                    return null
+                }
             }
+        }
+        catch (e: Exception) {
+            return verifier
         }
         return verifier
     }
@@ -53,9 +58,9 @@ object JWTUtils {
             .sign(Algorithm.HMAC256(properties.secret))
     }
 
-    fun getClaim(principal: JWTPrincipal, key: String): String {
-        return principal.payload.getClaim(key).asString()
-    }
+//    fun getClaim(principal: JWTPrincipal, key: String): String {
+//        return principal.payload.getClaim(key).asString()
+//    }
 
     fun isTokenValid(token: String): Boolean {
         return try {
@@ -82,4 +87,3 @@ object JWTUtils {
 fun ApplicationCall.getToken(): String? {
     return request.headers["Authorization"]?.removePrefix("Bearer ")
 }
-

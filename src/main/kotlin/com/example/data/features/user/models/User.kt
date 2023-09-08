@@ -12,7 +12,7 @@ data class User(
     val name: String,
     val email: String,
     var password: String? = null,
-    val avatar: String,
+    val avatar: String? = null,
     @Serializable(with = InstantSerializer::class)
     val createAtUTC: Instant,
     val isDeleted: Boolean,

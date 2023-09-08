@@ -12,7 +12,7 @@ import io.ktor.server.response.*
 fun Application.configAuthentication() {
 
     install(Authentication) {
-        jwt("auth-jwt") {
+        jwt(JWTUtils.CONFIGURATIONS_KEY) {
             verifier {
                 httpAuthHeader -> JWTUtils.baseVerifier(httpAuthHeader)
             }
@@ -20,7 +20,7 @@ fun Application.configAuthentication() {
                 val userId = jwtCredential.payload.getClaim("userId").asString()
                 if (userId != "") {
                     if (Expressions.UUID_REGEX.matcher(userId).matches()) {
-                        JWTPrincipal(jwtCredential.payload)
+                        AppJWTPrincipal(jwtCredential.payload)
                     }
                     else {
                         null

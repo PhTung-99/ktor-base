@@ -57,9 +57,7 @@ fun Route.authenticationRoute() {
             if (
                 email.isNullOrBlank() ||
                 password.isNullOrBlank() ||
-                name.isNullOrBlank() ||
-                fileBytes == null ||
-                originalFileName == null
+                name.isNullOrBlank()
             ) {
                 call.respond(
                     HttpStatusCode.BadRequest,
@@ -74,7 +72,7 @@ fun Route.authenticationRoute() {
                     password =password!!,
                     name = name!!,
                 )
-                val response = authenticationRepository.signup(request, fileBytes!!, originalFileName!!)
+                val response = authenticationRepository.signup(request, fileBytes, originalFileName)
                 call.respond(response.first, response.second)
             }
         }
@@ -108,10 +106,9 @@ fun Route.authenticationRoute() {
             val uuid = UUID.fromString(userId)
             val response = authenticationRepository.refreshToken(uuid, request.refreshToken)
             call.respond(response.first, response.second)
-            call.respond(HttpStatusCode.OK)
         }
 
-        authenticate("auth-jwt") {
+        authenticate(JWTUtils.CONFIGURATIONS_KEY) {
             post("logout") {
                 val token = call.getToken()
                 val request = call.receive<LogoutRequest>()
