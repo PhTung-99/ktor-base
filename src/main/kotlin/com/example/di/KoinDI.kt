@@ -11,6 +11,5 @@ fun Application.configureKoin() {
         modules(dataModule)
         modules(userModule)
         modules(authenticationModule)
-
     }
 }
