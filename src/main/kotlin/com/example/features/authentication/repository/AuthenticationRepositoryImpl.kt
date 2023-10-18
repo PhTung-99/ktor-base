@@ -145,11 +145,11 @@ class AuthenticationRepositoryImpl(
         userDAO.saveRefreshToken(userId, refreshToken)
     }
 
-    private suspend fun onGenerateToken(user: User): Pair<String, String> {
-        val token = JWTUtils.generateToken(user)
+    private suspend fun onGenerateToken(user: User): JWTToken {
+        val accessToken = JWTUtils.generateToken(user)
         val refreshToken = JWTUtils.generateReToken(user)
         saveTokenToDB(userId = user.id, refreshToken = refreshToken)
-        return Pair(token, refreshToken)
+        return JWTToken(accessToken = accessToken, refreshToken = refreshToken)
     }
 
     private suspend fun onLogin(user: User): Pair<HttpStatusCode, BaseResponse<LoginResponse?>> {
@@ -157,10 +157,7 @@ class AuthenticationRepositoryImpl(
             val jwtToken = onGenerateToken(user)
             val loginResponse = LoginResponse(
                 user = user,
-                token = JWTToken(
-                    accessToken = jwtToken.first,
-                    refreshToken = jwtToken.second,
-                ),
+                token = jwtToken,
             )
             Pair(
                 HttpStatusCode.OK,
