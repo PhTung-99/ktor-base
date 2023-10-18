@@ -18,7 +18,6 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
 import java.util.*
-import javax.lang.model.type.NullType
 
 fun Route.authenticationRoute() {
 
@@ -61,7 +60,8 @@ fun Route.authenticationRoute() {
             ) {
                 call.respond(
                     HttpStatusCode.BadRequest,
-                    BaseResponse<NullType>(
+                    BaseResponse<Nothing>(
+                        isSuccess = false,
                         messageCode = AuthenticationMessageCode.INVALID_INFO
                     )
                 )
@@ -85,7 +85,8 @@ fun Route.authenticationRoute() {
             ) {
                 call.respond(
                     HttpStatusCode.BadRequest,
-                    BaseResponse<NullType>(
+                    BaseResponse<Nothing>(
+                        isSuccess = false,
                         messageCode = AuthenticationMessageCode.INVALID_INFO
                     )
                 )

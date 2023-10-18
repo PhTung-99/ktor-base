@@ -17,11 +17,12 @@ class UserRepositoryImpl(
             return Pair(
                 HttpStatusCode.OK,
                 BaseResponse(
+                    isSuccess = true,
                     data = user,
                 )
             )
         } ?: kotlin.run {
-            return Pair(HttpStatusCode.BadRequest, BaseResponse(messageCode = UserMessageCode.USER_NOT_FOUND))
+            return Pair(HttpStatusCode.BadRequest, BaseResponse(false, messageCode = UserMessageCode.USER_NOT_FOUND))
         }
     }
 }

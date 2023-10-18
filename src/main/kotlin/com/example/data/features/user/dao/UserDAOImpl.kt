@@ -12,7 +12,7 @@ import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
 import java.util.*
 
-class UserDAOImpl(): UserDAO {
+class UserDAOImpl: UserDAO {
 
     override suspend fun emailUsed(email: String): Boolean = dbQuery {
         val useEmail = UserEntity.select {

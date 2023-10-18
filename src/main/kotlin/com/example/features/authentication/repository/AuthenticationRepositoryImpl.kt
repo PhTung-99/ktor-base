@@ -49,6 +49,7 @@ class AuthenticationRepositoryImpl(
                 Pair(
                     HttpStatusCode.Created,
                     BaseResponse(
+                        isSuccess = true,
                         data = user,
                         messageCode = AuthenticationMessageCode.SIGNUP_SUCCESS
                     )
@@ -61,6 +62,7 @@ class AuthenticationRepositoryImpl(
                 Pair(
                     HttpStatusCode.InternalServerError,
                     BaseResponse(
+                        isSuccess = false,
                         messageCode = e.message
                     )
                 )
@@ -70,6 +72,7 @@ class AuthenticationRepositoryImpl(
             Pair(
                 HttpStatusCode.BadRequest,
                 BaseResponse(
+                    isSuccess = false,
                     data = null,
                     messageCode = AuthenticationMessageCode.EMAIL_USED
                 )
@@ -88,6 +91,7 @@ class AuthenticationRepositoryImpl(
                 Pair(
                     HttpStatusCode.BadRequest,
                     BaseResponse(
+                        isSuccess = false,
                         messageCode = AuthenticationMessageCode.PASSWORD_WRONG
                     )
                 )
@@ -97,6 +101,7 @@ class AuthenticationRepositoryImpl(
             Pair(
                 HttpStatusCode.BadRequest,
                 BaseResponse(
+                    isSuccess = false,
                     messageCode = AuthenticationMessageCode.EMAIL_NOT_FOUND
                 )
             )
@@ -121,6 +126,7 @@ class AuthenticationRepositoryImpl(
         return Pair(
             HttpStatusCode.BadRequest,
             BaseResponse(
+                isSuccess = false,
                 messageCode = AuthenticationMessageCode.INVALID_REFRESH_TOKEN
             )
         )
@@ -132,12 +138,12 @@ class AuthenticationRepositoryImpl(
             if (isRefreshValid) {
                 RedisClient.jedis.setex(token, JWTUtils.validityInMs,"revoked")
                 RedisClient.jedis.setex(refreshToken, JWTUtils.validityInMs,"revoked")
-                Pair(HttpStatusCode.OK, BaseResponse(data = true))
+                Pair(HttpStatusCode.OK, BaseResponse(true, data = true))
             } else {
-                Pair(HttpStatusCode.BadRequest, BaseResponse(data = false, messageCode = AuthenticationMessageCode.INVALID_REFRESH_TOKEN))
+                Pair(HttpStatusCode.BadRequest, BaseResponse(false, data = false, messageCode = AuthenticationMessageCode.INVALID_REFRESH_TOKEN))
             }
         } catch (e: Exception) {
-            Pair(HttpStatusCode.InternalServerError, BaseResponse(data = false, messageCode = e.message))
+            Pair(HttpStatusCode.InternalServerError, BaseResponse(false, data = false, messageCode = e.message))
         }
     }
 
@@ -162,6 +168,7 @@ class AuthenticationRepositoryImpl(
             Pair(
                 HttpStatusCode.OK,
                 BaseResponse(
+                    isSuccess = true,
                     data = loginResponse,
                 )
             )
@@ -169,7 +176,7 @@ class AuthenticationRepositoryImpl(
         catch (e: Exception) {
             Pair(
                 HttpStatusCode.InternalServerError,
-                BaseResponse()
+                BaseResponse(false)
             )
         }
     }

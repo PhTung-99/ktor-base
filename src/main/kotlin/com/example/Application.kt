@@ -9,7 +9,7 @@ import com.example.logging.configureLogging
 import com.example.property.AppProperties
 import com.example.routes.*
 import com.example.utils.fileInit
-import configureSerializable
+import com.example.plugin.serializable.configureSerializable
 import io.ktor.server.application.*
 
 fun main(args: Array<String>) {
