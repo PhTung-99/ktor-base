@@ -6,6 +6,7 @@ import com.example.data.models.BaseResponse
 import com.example.data.features.user.dao.UserDAO
 import com.example.data.features.user.dao.UserTokenDAO
 import com.example.data.features.user.models.User
+import com.example.data.models.JWTToken
 import com.example.data.redis.RedisClient
 import com.example.features.authentication.constants.AuthenticationMessageCode
 import com.example.features.authentication.models.requests.LoginRequest
@@ -153,10 +154,13 @@ class AuthenticationRepositoryImpl(
 
     private suspend fun onLogin(user: User): Pair<HttpStatusCode, BaseResponse<LoginResponse?>> {
         return try {
-            val login = onGenerateToken(user)
+            val jwtToken = onGenerateToken(user)
             val loginResponse = LoginResponse(
-                token = login.first,
-                refreshToken = login.second,
+                user = user,
+                token = JWTToken(
+                    accessToken = jwtToken.first,
+                    refreshToken = jwtToken.second,
+                ),
             )
             Pair(
                 HttpStatusCode.OK,
