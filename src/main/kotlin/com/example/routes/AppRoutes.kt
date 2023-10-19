@@ -9,7 +9,7 @@ import java.io.File
 import java.nio.file.Paths
 
 fun Application.configureRouting() {
-    val pathImage = "${Paths.get("").toAbsolutePath().toString()}/static-content/images/"
+    val pathImage = "${Paths.get("").toAbsolutePath()}/static-content/images/"
     routing {
         staticFiles("/static-content/images", File(pathImage))
         userRoutes()
