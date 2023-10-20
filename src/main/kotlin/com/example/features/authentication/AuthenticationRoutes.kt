@@ -61,7 +61,6 @@ fun Route.authenticationRoute() {
                 call.respond(
                     HttpStatusCode.BadRequest,
                     BaseResponse<Nothing>(
-                        isSuccess = false,
                         messageCode = AuthenticationMessageCode.INVALID_INFO
                     )
                 )
@@ -86,7 +85,6 @@ fun Route.authenticationRoute() {
                 call.respond(
                     HttpStatusCode.BadRequest,
                     BaseResponse<Nothing>(
-                        isSuccess = false,
                         messageCode = AuthenticationMessageCode.INVALID_INFO
                     )
                 )

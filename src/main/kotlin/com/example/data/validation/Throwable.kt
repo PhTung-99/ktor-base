@@ -9,10 +9,7 @@ import io.ktor.server.response.*
 fun Application.validationConfig() {
     install(StatusPages) {
         exception<Throwable> { call, cause ->
-            call.respond(HttpStatusCode.InternalServerError, BaseResponse<Nothing>(
-                isSuccess = false,
-                messageCode = cause.toString()
-            ))
+            call.respond(HttpStatusCode.InternalServerError, BaseResponse<Nothing>(messageCode = cause.toString()))
         }
     }
 }
